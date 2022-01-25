@@ -3,6 +3,8 @@
 Students:
 
 Student Supervisor:
+Josep Alcalde
 
 Mentor:
 Steven Macías 
+
