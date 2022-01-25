@@ -3,6 +3,7 @@
 Students:
 Jordi Castillo, 
 Eric Pérez Castro
+Nadia González Tenorio
 
 Student Supervisor:
 Josep Alcalde
