@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+Created on Thu Feb 17 23:59:04 2022
+
+@author: joanf
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Thu Feb 17 17:36:39 2022
 
 @author: Jordi Castillo
@@ -23,10 +30,15 @@ def main():
    
 if __name__ == "__main__":
     main()
-
-
-#para archivar los datos del magnetómetro en un csv, incluyendo magnetismo, fecha y hora
-#también he intentado activar la función del mag. parando la función envez de con un temporizador
+    
+    
+    
+    
+#In addition, any files that your program creates should have sensible, 
+#informative names. Only use letters, numbers, dots (.), hyphens (-), 
+#or underscores (_) in your file names. 
+#No other characters are allowed. Do not use spaces in file names, 
+#because they can cause problems when files are transferred between computers.
 
 import csv
 from sense_hat import SenseHat
@@ -56,8 +68,7 @@ for i in range(10):
     add_csv_data(data_file, row)
     sleep(10)
     
-#y esto por si necesitamos saber donde se encuentra la foto hecha
-
+    
     from orbit import ISS
 from skyfield.api import load
 
