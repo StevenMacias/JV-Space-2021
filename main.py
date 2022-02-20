@@ -43,7 +43,7 @@ def add_csv_data(data_file, data):
 
 def main():
    print("JV-Space")
-   mag = getMagnetometerValues()
+   mag = get_magnetometer_values()
    print(mag)
    base_folder = Path(__file__).parent.resolve()
    data_file = base_folder/'data.csv'
@@ -56,12 +56,3 @@ def main():
    
 if __name__ == "__main__":
     main()
-#Date/time	Magnetometer Values
-#2022-02-20 19:30:48.302761	{'x': -7.62874174118042, 'y': -10.914251327514648, 'z': 3.419332981109619} 
-
-#Date/time	Magnetometer Values
-#2022-02-20 19:30:48.302761, -7.62, -10.91, 3,41
-
-mag_dict = {'x': -7.62874174118042, 'y': -10.914251327514648, 'z': 3.419332981109619}
-
-print(mag_dict["x"])
