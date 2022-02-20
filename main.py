@@ -33,7 +33,7 @@ def get_iss_position():
 def create_csv(data_file):
     with open(data_file, 'w') as f:
         writer = csv.writer(f)
-        header = ("Date/time", "Magnetometer Values")
+        header = ("datetime", "mag_x", "mag_y", "mag_z", "iss_pos")
         writer.writerow(header)
 
 def add_csv_data(data_file, data):
@@ -50,7 +50,7 @@ def main():
 
    create_csv(data_file)
    for i in range(10):
-       row = (datetime.now(), mag["x"], mag["y"], mag["z"])
+       row = (datetime.now(), mag["x"], mag["y"], mag["z"], get_iss_position())
        add_csv_data(data_file, row)
        sleep(10)
    
