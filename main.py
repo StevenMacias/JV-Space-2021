@@ -7,10 +7,11 @@ Created on Thu Feb 17 17:36:39 2022
 from orbit import ISS
 from skyfield.api import load
 from sense_hat import SenseHat
-from datetime import datetime
 from pathlib import Path
 from time import sleep
 import csv
+from datetime import datetime, timedelta
+
 
 sense = SenseHat() 
 sense.set_imu_config(True, False, False) 
@@ -49,10 +50,17 @@ def main():
    data_file = base_folder/'data.csv'
 
    create_csv(data_file)
-   for i in range(10):
+   # Create a `datetime` variable to store the start time
+   start_time = datetime.now()
+   # Create a `datetime` variable to store the current time
+   # (these will be almost the same at the start)
+   now_time = datetime.now()
+   # Run a loop for 180 minutes
+   while (now_time < start_time + timedelta(minutes=180)):
        row = (datetime.now(), mag["x"], mag["y"], mag["z"], get_iss_position())
        add_csv_data(data_file, row)
-       sleep(10)
+       sleep(15)
+       now_time = datetime.now()
    
 if __name__ == "__main__":
     main()
