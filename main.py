@@ -4,16 +4,24 @@ Created on Thu Feb 17 17:36:39 2022
 
 @author: Bernat Casas, Jordi Castillo, Nadia González, Steven Macías
 """
-from orbit import ISS
-from skyfield.api import load
 from sense_hat import SenseHat
+from skyfield.api import load
+from picamera import PiCamera
 from datetime import datetime
 from pathlib import Path
 from time import sleep
+from orbit import ISS
 import csv
+import os
+
+
 
 sense = SenseHat() 
+camera = PiCamera()
+camera.resolution = (1680, 1050)
+os.mkdir("./images")
 sense.set_imu_config(True, False, False) 
+
 
 def get_magnetometer_values():
     # Code to obtain values from the Magnetometer
@@ -52,6 +60,7 @@ def main():
    for i in range(10):
        row = (datetime.now(), mag["x"], mag["y"], mag["z"], get_iss_position())
        add_csv_data(data_file, row)
+       camera.capture(f'./images/image_{i:03d}.jpg')
        sleep(10)
    
 if __name__ == "__main__":
