@@ -4,13 +4,15 @@ Created on Thu Feb 17 17:36:39 2022
 
 @author: Bernat Casas, Jordi Castillo, Nadia González, Steven Macías
 """
-from orbit import ISS
-from skyfield.api import load
+
+from datetime import datetime, timedelta
 from sense_hat import SenseHat
+from skyfield.api import load
 from pathlib import Path
 from time import sleep
+from orbit import ISS
 import csv
-from datetime import datetime, timedelta
+
 
 
 sense = SenseHat() 
@@ -31,10 +33,11 @@ def get_iss_position():
     location = position.subpoint()
     print(location)
     
+    
 def create_csv(data_file):
     with open(data_file, 'w') as f:
         writer = csv.writer(f)
-        header = ("datetime", "mag_x", "mag_y", "mag_z", "iss_pos")
+        header = ("datetime", "mag_x", "mag_y", "mag_z", "iss.pos_lat", "iss.pos_lon", "iss.pos_elv")
         writer.writerow(header)
 
 def add_csv_data(data_file, data):
@@ -46,6 +49,8 @@ def main():
    print("JV-Space")
    mag = get_magnetometer_values()
    print(mag)
+   iss_pos = get_iss_position()
+   print(iss_pos)
    base_folder = Path(__file__).parent.resolve()
    data_file = base_folder/'data.csv'
 
@@ -57,7 +62,7 @@ def main():
    now_time = datetime.now()
    # Run a loop for 180 minutes
    while (now_time < start_time + timedelta(minutes=180)):
-       row = (datetime.now(), mag["x"], mag["y"], mag["z"], get_iss_position())
+       row = (datetime.now(), mag["x"], mag["y"], mag["z"], iss_pos["Latitude"], iss_pos["Longitude"], iss_pos["Elevation"])
        add_csv_data(data_file, row)
        sleep(15)
        now_time = datetime.now()
