@@ -15,11 +15,6 @@ from orbit import ISS
 import csv
 import os
 
-
-camera = PiCamera()
-camera.resolution = (1680, 1050)
-os.mkdir("./images")
-
 def get_magnetometer_values(sense):
     # Code to obtain values from the Magnetometer
     magnetometer_values = sense.get_compass_raw()
@@ -69,7 +64,7 @@ def create_csv(data_file):
     with open(data_file, 'w') as f:
         logger.info('Creating header of CSV file')
         writer = csv.writer(f)
-        header = ("iter", "datetime", "mag_x", "mag_y", "mag_z", "iss.pos_lat", "iss.pos_lon", "iss.pos_elv")
+        header = ("iter", "datetime", "mag_x", "mag_y", "mag_z", "iss.pos_lat", "iss.pos_lon", "iss.pos_elv", "image_name")
         writer.writerow(header)
 
 def add_csv_data(data_file, data):
@@ -80,6 +75,9 @@ def add_csv_data(data_file, data):
 
 def main():
    logger.info("Executing JV-Space's program")
+   camera = PiCamera()
+   camera.resolution = (1680, 1050)
+   os.mkdir("./images")
    sense = SenseHat() 
    sense.set_imu_config(True, False, False) 
    base_folder = Path(__file__).parent.resolve()
@@ -97,11 +95,13 @@ def main():
    now_time = datetime.now()
    # Run a loop for 180 minutes
    while (now_time < start_time + timedelta(minutes=178)):
+       image_name = f"image_{iteration:03d}.jpg"
+       image_path = image_folder/image_name
+       capture(camera, image_path)
        mag = get_magnetometer_values(sense)
        iss_pos = get_iss_position()
-       row = (iteration, datetime.now(), mag["x"], mag["y"], mag["z"], iss_pos.latitude.degrees, iss_pos.longitude.degrees, iss_pos.elevation.km)
+       row = (iteration, datetime.now(), mag["x"], mag["y"], mag["z"], iss_pos.latitude.degrees, iss_pos.longitude.degrees, iss_pos.elevation.km, image_name)
        add_csv_data(data_file, row)
-       camera.capture(f'./images/image_{iteration:03d}.jpg')
        sleep(15)
        now_time = datetime.now()
        iteration = iteration + 1
