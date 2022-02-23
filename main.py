@@ -81,7 +81,6 @@ def main():
    logger.info("Executing JV-Space's program")
    camera = PiCamera()
    camera.resolution = (1680, 1050)
-   os.mkdir("./images")
    sense = SenseHat() 
    sense.set_imu_config(True, False, False) 
    base_folder = Path(__file__).parent.resolve()
@@ -89,7 +88,7 @@ def main():
    logfile(base_folder/"events.log")
    iteration = 0
    image_folder = base_folder/"images"
-
+   os.makedirs(image_folder, exist_ok=True)
    create_csv(data_file)
    # Create a `datetime` variable to store the start time
    start_time = datetime.now()
