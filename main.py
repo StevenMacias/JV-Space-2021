@@ -13,12 +13,7 @@ from time import sleep
 from orbit import ISS
 import csv
 
-
-
-sense = SenseHat() 
-sense.set_imu_config(True, False, False) 
-
-def get_magnetometer_values():
+def get_magnetometer_values(sense):
     # Code to obtain values from the Magnetometer
     magnetometer_values = sense.get_compass_raw()
     # Code for filling magnetometer_values
@@ -31,7 +26,7 @@ def get_iss_position():
     position = ISS.at(t)
     # Compute the coordinates of the Earth location directly beneath the ISS
     location = position.subpoint()
-    print(location)
+    return location
     
     
 def create_csv(data_file):
@@ -47,10 +42,8 @@ def add_csv_data(data_file, data):
 
 def main():
    print("JV-Space")
-   mag = get_magnetometer_values()
-   print(mag)
-   iss_pos = get_iss_position()
-   print(iss_pos)
+   sense = SenseHat() 
+   sense.set_imu_config(True, False, False) 
    base_folder = Path(__file__).parent.resolve()
    data_file = base_folder/'data.csv'
 
@@ -62,7 +55,9 @@ def main():
    now_time = datetime.now()
    # Run a loop for 180 minutes
    while (now_time < start_time + timedelta(minutes=180)):
-       row = (datetime.now(), mag["x"], mag["y"], mag["z"], iss_pos["Latitude"], iss_pos["Longitude"], iss_pos["Elevation"])
+       mag = get_magnetometer_values(sense)
+       iss_pos = get_iss_position()
+       row = (datetime.now(), mag["x"], mag["y"], mag["z"], iss_pos.latitude.degrees, iss_pos.longitude.degrees, iss_pos.elevation.km)
        add_csv_data(data_file, row)
        sleep(15)
        now_time = datetime.now()
