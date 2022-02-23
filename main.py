@@ -58,7 +58,11 @@ def capture(camera, image):
     camera.exif_tags['GPS.GPSLongitudeRef'] = "W" if west else "E"
     
     # Capture the image
-    camera.capture(image)
+    try:
+        logger.info(f"Trying to save image at {image}")
+        camera.capture(image)
+    except Exception as e:
+        logger.error(f'{e.__class__.__name__}: {e})') 
     
 def create_csv(data_file):
     with open(data_file, 'w') as f:
@@ -89,7 +93,7 @@ def main():
    create_csv(data_file)
    # Create a `datetime` variable to store the start time
    start_time = datetime.now()
-   logger.info('Experiment started at {start_time}')
+   logger.info(f'Experiment started at {start_time}')
    # Create a `datetime` variable to store the current time
    # (these will be almost the same at the start)
    now_time = datetime.now()
