@@ -76,6 +76,15 @@ def add_csv_data(data_file, data):
         writer = csv.writer(f)
         logger.info('Writing row of data')
         writer.writerow(data)
+        
+def get_sunlight(ephemeris,timescale):
+        t=timescale.now()
+        if ISS.at(t)is_sunlit(ephimeris):True
+            print("In sunlight")
+        else if ISS.at(t)is_sunlit(ephimeris):False
+            print("In darkness")
+            result=False or True
+            return result()
 
 def main():
    logger.info("Executing JV-Space's program")
@@ -88,6 +97,8 @@ def main():
    logfile(base_folder/"events.log")
    iteration = 0
    image_folder = base_folder/"images"
+   ephemeris=load("de421.bsp")
+   timescale=load.timescale()
    os.makedirs(image_folder, exist_ok=True)
    create_csv(data_file)
    # Create a `datetime` variable to store the start time
