@@ -19,6 +19,7 @@ import os
 camera = PiCamera()
 camera.resolution = (1680, 1050)
 os.mkdir("./images")
+
 def get_magnetometer_values(sense):
     # Code to obtain values from the Magnetometer
     magnetometer_values = sense.get_compass_raw()
@@ -33,7 +34,36 @@ def get_iss_position():
     # Compute the coordinates of the Earth location directly beneath the ISS
     location = position.subpoint()
     return location
+
+def convert(angle):
+    """
+    Convert a `skyfield` Angle to an EXIF-appropriate
+    representation (rationals)
+    e.g. 98° 34' 58.7 to "98/1,34/1,587/10"
+
+    Return a tuple containing a boolean and the converted angle,
+    with the boolean indicating if the angle is negative.
+    """
+    sign, degrees, minutes, seconds = angle.signed_dms()
+    exif_angle = f'{degrees:.0f}/1,{minutes:.0f}/1,{seconds*10:.0f}/10'
+    return sign < 0, exif_angle
+
+def capture(camera, image):
+    """Use `camera` to capture an `image` file with lat/long EXIF data."""
+    point = ISS.coordinates()
     
+    #Convert the latitude and longitude to EXIF-appropiate representations
+    south, exif_latitude = convert(point.latitude)
+    west, exif_longitude = convert(point.longitude)
+    
+    # Set the EXIF tags specifying the current location
+    camera.exif_tags['GPS.GPSLatitude'] = exif_latitude
+    camera.exif_tags['GPS.GPSLatitudeRef'] = "S" if south else "N"
+    camera.exif_tags['GPS.GPSLongitude'] = exif_longitude
+    camera.exif_tags['GPS.GPSLongitudeRef'] = "W" if west else "E"
+    
+    # Capture the image
+    camera.capture(image)
     
 def create_csv(data_file):
     with open(data_file, 'w') as f:
@@ -56,6 +86,7 @@ def main():
    data_file = base_folder/'data.csv'
    logfile(base_folder/"events.log")
    iteration = 0
+   image_folder = base_folder/"images"
 
    create_csv(data_file)
    # Create a `datetime` variable to store the start time
