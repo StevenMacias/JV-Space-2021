@@ -100,7 +100,7 @@ def main():
    while (now_time < start_time + timedelta(minutes=178)):
        image_name = f"image_{iteration:03d}.jpg"
        image_path = image_folder/image_name
-       capture(camera, image_path)
+       capture(camera, str(image_path))
        mag = get_magnetometer_values(sense)
        iss_pos = get_iss_position()
        row = (iteration, datetime.now(), mag["x"], mag["y"], mag["z"], iss_pos.latitude.degrees, iss_pos.longitude.degrees, iss_pos.elevation.km, image_name)
