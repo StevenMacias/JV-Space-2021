@@ -14,15 +14,10 @@ import csv
 import os
 from datetime import datetime, timedelta
 
-
-sense = SenseHat() 
 camera = PiCamera()
 camera.resolution = (1680, 1050)
 os.mkdir("./images")
-sense.set_imu_config(True, False, False) 
-
-
-def get_magnetometer_values():
+def get_magnetometer_values(sense):
     # Code to obtain values from the Magnetometer
     magnetometer_values = sense.get_compass_raw()
     # Code for filling magnetometer_values
@@ -35,12 +30,13 @@ def get_iss_position():
     position = ISS.at(t)
     # Compute the coordinates of the Earth location directly beneath the ISS
     location = position.subpoint()
-    print(location)
+    return location
+    
     
 def create_csv(data_file):
     with open(data_file, 'w') as f:
         writer = csv.writer(f)
-        header = ("datetime", "mag_x", "mag_y", "mag_z", "iss_pos")
+        header = ("datetime", "mag_x", "mag_y", "mag_z", "iss.pos_lat", "iss.pos_lon", "iss.pos_elv")
         writer.writerow(header)
 
 def add_csv_data(data_file, data):
@@ -50,8 +46,8 @@ def add_csv_data(data_file, data):
 
 def main():
    print("JV-Space")
-   mag = get_magnetometer_values()
-   print(mag)
+   sense = SenseHat() 
+   sense.set_imu_config(True, False, False) 
    base_folder = Path(__file__).parent.resolve()
    data_file = base_folder/'data.csv'
 
@@ -63,7 +59,9 @@ def main():
    now_time = datetime.now()
    # Run a loop for 180 minutes
    while (now_time < start_time + timedelta(minutes=180)):
-       row = (datetime.now(), mag["x"], mag["y"], mag["z"], get_iss_position())
+       mag = get_magnetometer_values(sense)
+       iss_pos = get_iss_position()
+       row = (datetime.now(), mag["x"], mag["y"], mag["z"], iss_pos.latitude.degrees, iss_pos.longitude.degrees, iss_pos.elevation.km)
        add_csv_data(data_file, row)
        camera.capture(f'./images/image_{i:03d}.jpg')
        sleep(15)
