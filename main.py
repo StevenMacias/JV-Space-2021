@@ -17,7 +17,7 @@ import os
 
 def get_magnetometer_values(sense):
     # Code to obtain values from the Magnetometer
-    magnetometer_values = sense.get_compass_raw()
+    loger.info (f'magnetometer_values = sense.get_compass_raw()')
     # Code for filling magnetometer_values
     return magnetometer_values
 
@@ -58,6 +58,7 @@ def capture(camera, image):
     camera.exif_tags['GPS.GPSLongitudeRef'] = "W" if west else "E"
     
     # Capture the image
+    camera.capture (image)
     try:
         logger.info(f"Trying to save image at {image}")
         camera.capture(image)
