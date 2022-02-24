@@ -17,7 +17,8 @@ import os
 
 def get_magnetometer_values(sense):
     # Code to obtain values from the Magnetometer
-    loger.info (f'magnetometer_values = sense.get_compass_raw()')
+    magnetometer_values = sense.get_compass_raw()
+    logger.info(f'Magnetometer values: {magnetometer_values}')
     # Code for filling magnetometer_values
     return magnetometer_values
 
@@ -28,6 +29,7 @@ def get_iss_position():
     position = ISS.at(t)
     # Compute the coordinates of the Earth location directly beneath the ISS
     location = position.subpoint()
+    logger.info(f'The location of the ISS: {location}')
     return location
 
 def convert(angle):
