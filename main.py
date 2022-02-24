@@ -19,7 +19,7 @@ def get_magnetometer_values(sense):
     """
     Function used to obtain the magnetometer values
     """
-    magnetometer_values = None
+    magnetometer_values = {"x":None, "y":None, "z":None}
     logger.info('Getting magnetometer values')
     # Code to obtain values from the Magnetometer
     try:
@@ -182,7 +182,7 @@ def main():
     iteration = 0
     sleep_time = 15
     experiment_minutes = 179
-    # We are expecting to take 716 pictures in 179 minutes. 
+    # We are expecting to take 716 pictures in 179 minutes (One every 15 seconds). 
     # By using the maximum size of the example images with resolution (2592x1944) 
     # in the provided Data folder (3.5 MB), we expect to use 2506 MB
     while (now_time < start_time + timedelta(minutes=experiment_minutes)):
