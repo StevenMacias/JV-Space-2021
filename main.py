@@ -16,6 +16,7 @@ import csv
 import os
 
 def get_magnetometer_values(sense):
+    logger.info('Getting magnetometer values')
     # Code to obtain values from the Magnetometer
     magnetometer_values = sense.get_compass_raw()
     logger.info(f'Magnetometer values: {magnetometer_values}')
@@ -23,6 +24,7 @@ def get_magnetometer_values(sense):
     return magnetometer_values
 
 def get_iss_position():
+    logger.info('Getting the ISS position')
     # Obtain the current time `t`
     t = load.timescale().now()
     # Compute where the ISS is at time `t`
@@ -33,6 +35,7 @@ def get_iss_position():
     return location
 
 def convert(angle):
+    logger.info('Conversion of the coordinates')
     """
     Convert a `skyfield` Angle to an EXIF-appropriate
     representation (rationals)
@@ -46,6 +49,7 @@ def convert(angle):
     return sign < 0, exif_angle
 
 def capture(camera, image):
+    logger.info('Taking photographies with lat/long EXIF data')
     """Use `camera` to capture an `image` file with lat/long EXIF data."""
     point = ISS.coordinates()
     
@@ -97,10 +101,12 @@ def main():
    camera.resolution = (1680, 1050)
    sense = SenseHat() 
    sense.set_imu_config(True, False, False) 
+   logger.info('Saving the files to the correct directory')
    base_folder = Path(__file__).parent.resolve()
    data_file = base_folder/'data.csv'
    logfile(base_folder/"events.log")
    iteration = 0
+   logger.info('Storing the photographies to the correct directory')
    image_folder = base_folder/"images"
    ephemeris=load("de421.bsp")
    timescale=load.timescale()
@@ -112,15 +118,19 @@ def main():
    # Create a `datetime` variable to store the current time
    # (these will be almost the same at the start)
    now_time = datetime.now()
-   # Run a loop for 180 minutes
+   # Run a loop for 178 minutes
    while (now_time < start_time + timedelta(minutes=178)):
+       logger.info("Main's loop temporizer")
        image_name = f"image_{iteration:03d}.jpg"
        image_path = image_folder/image_name
+       logger.info('Getting the images to follow their correct path')
        capture(camera, str(image_path))
        mag = get_magnetometer_values(sense)
        iss_pos = get_iss_position()
        row = (iteration, datetime.now(), mag["x"], mag["y"], mag["z"], iss_pos.latitude.degrees, iss_pos.longitude.degrees, iss_pos.elevation.km, image_name, get_sunlight(ephemeris, timescale))
+       logger.info('Updating the CSV')
        add_csv_data(data_file, row)
+       logger.info('"Temporizer" between taken photographies')
        sleep(15)
        now_time = datetime.now()
        iteration = iteration + 1
