@@ -68,7 +68,7 @@ def create_csv(data_file):
     with open(data_file, 'w') as f:
         logger.info('Creating header of CSV file')
         writer = csv.writer(f)
-        header = ("iter", "datetime", "mag_x", "mag_y", "mag_z", "iss.pos_lat", "iss.pos_lon", "iss.pos_elv", "image_name")
+        header = ("iter", "datetime", "mag_x", "mag_y", "mag_z", "iss.pos_lat", "iss.pos_lon", "iss.pos_elv", "image_name", "sunlit")
         writer.writerow(header)
 
 def add_csv_data(data_file, data):
@@ -78,13 +78,15 @@ def add_csv_data(data_file, data):
         writer.writerow(data)
         
 def get_sunlight(ephemeris,timescale):
-        t=timescale.now()
-        if ISS.at(t)is_sunlit(ephimeris):True
-            print("In sunlight")
-        else if ISS.at(t)is_sunlit(ephimeris):False
-            print("In darkness")
-            result=False or True
-            return result()
+    t = timescale.now()
+    result = None
+    if ISS.at(t).is_sunlit(ephemeris):
+        logger.info('In sunlight')
+        result = True
+    else:
+        logger.info('In darkness')
+        result = False
+    return result
 
 def main():
    logger.info("Executing JV-Space's program")
@@ -114,7 +116,7 @@ def main():
        capture(camera, str(image_path))
        mag = get_magnetometer_values(sense)
        iss_pos = get_iss_position()
-       row = (iteration, datetime.now(), mag["x"], mag["y"], mag["z"], iss_pos.latitude.degrees, iss_pos.longitude.degrees, iss_pos.elevation.km, image_name)
+       row = (iteration, datetime.now(), mag["x"], mag["y"], mag["z"], iss_pos.latitude.degrees, iss_pos.longitude.degrees, iss_pos.elevation.km, image_name, get_sunlight(ephemeris, timescale))
        add_csv_data(data_file, row)
        sleep(15)
        now_time = datetime.now()
