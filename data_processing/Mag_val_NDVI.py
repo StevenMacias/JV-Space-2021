@@ -58,6 +58,8 @@ data.csv", index_col = "iter")
 #insertar columna para valores NDVI
 df.insert(len(df.columns), 'NDVI_val', None)
 print(df)
+#insertar columnas para valores del magnetometro
+df.insert(len(df.columns), 'Mag_val', None)
 
 for index, row in df.iterrows():
     print(index)
@@ -91,5 +93,7 @@ for index, row in df.iterrows():
     #cv2.imwrite('color_mapped_image.png', color_mapped_image)
     cv2.imwrite(dir_processed_pictures+'color_mapped_con_ndvi_'+row.image_name, color_mapped_image_ndvi_con)
     #cv2.imwrite(dir_processed_pictures+'color_mapped__ndvi'+row.image_name, color_mapped_image_ndvi)
+    Mag_vector = sqrt( (mag_x**2) + (mag_y**2) + (mag_z**2))
+    df['Mag_val'][index]
  
 df.to_csv(dir_processed_pictures+'processed_data.csv')
