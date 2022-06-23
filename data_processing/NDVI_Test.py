@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 plt.figure(figsize=(6,48))
-set_ylim(-1,1)
+plt.set_ylim(-1,1)
 
 correlation_filepath = "../input/processed-data/processed_data.csv"
 correlation_data = pd.read_csv(correlation_filepath)
