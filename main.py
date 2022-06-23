@@ -19,7 +19,7 @@ def get_magnetometer_values(sense):
     """
     Function used to obtain the magnetometer values
     """
-    magnetometer_values = None
+    magnetometer_values = {"x":None, "y":None, "z":None}
     logger.info('Getting magnetometer values')
     # Code to obtain values from the Magnetometer
     try:
@@ -54,7 +54,7 @@ def convert(angle):
     Return a tuple containing a boolean and the converted angle,
     with the boolean indicating if the angle is negative.
     """
-    logger.info('Conversion of the coordinates')
+    logger.info(f'Conversion of the coordinates: {angle}')
     sign, degrees, minutes, seconds = angle.signed_dms()
     exif_angle = f'{degrees:.0f}/1,{minutes:.0f}/1,{seconds*10:.0f}/10'
     return sign < 0, exif_angle
@@ -119,7 +119,7 @@ def get_sunlight(ephemeris,timescale):
     return result
 
 def main():
-    logger.info("Executing JV-Space's script")
+    logger.info("Executing experiment from JV-Space")
     
     camera_ready    = False
     ephemeris_ready = False 
@@ -129,7 +129,7 @@ def main():
     try:
         # Try-catch just in case of camera failure
         camera = PiCamera()
-        camera.resolution = (1680, 1050)
+        camera.resolution = (2592, 1944)
         camera_ready = True 
     except Exception as e:
         logger.error(f'{e.__class__.__name__}: {e})')
@@ -169,7 +169,7 @@ def main():
     # Creating log file 
     logfile(log_file)
     
-    logger.info("Creating image folder at {image_folder}")
+    logger.info(f"Creating image folder at {image_folder}")
     os.makedirs(image_folder, exist_ok=True)
     # Create header of the CSV file
     create_csv(data_file)
@@ -182,9 +182,9 @@ def main():
     iteration = 0
     sleep_time = 15
     experiment_minutes = 179
-    # We are expecting to take 716 pictures in 179 minutes. 
-    # By using the maximum size of the example images in the provided Data 
-    # folder (3.5 MB), we expect to use 2506 MB
+    # We are expecting to take 716 pictures in 179 minutes (One every 15 seconds). 
+    # By using the maximum size of the example images with resolution (2592x1944) 
+    # in the provided Data folder (3.5 MB), we expect to use 2506 MB
     while (now_time < start_time + timedelta(minutes=experiment_minutes)):
         logger.info(f"Iteration {iteration}")
         
