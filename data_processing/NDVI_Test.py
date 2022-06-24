@@ -5,16 +5,18 @@ Created on Sat Jun 18 13:39:41 2022
 @author: Jordi Castillo
 """
 
+import numpy as np
 import pandas as pd
-pd.plotting.register_matplotlib_converters()
 import matplotlib.pyplot as plt
-%matplotlib inline
-import seaborn as sns
 
-plt.figure(figsize=(6,48))
-plt.set_ylim(-1,1)
+csv_location = "/home/pi/Desktop/Processed_Pictures_2/processed_data_2.csv"
+df = pd.read_csv(csv_location) 
 
-correlation_filepath = "../input/processed-data/processed_data.csv"
-correlation_data = pd.read_csv(correlation_filepath)
-sns.regplot(x=correlation_data['mag_val'], y=correlation_data['NDVI_val'])
+plt.scatter(df.Mag_val, df.NDVI_val)
+plt.ylim(-0.75, 0.75)
+plt.title("NDVI - Magnetomer")
+plt.xlabel("Magnetometer absolute value")
+plt.ylabel("Average NDVI of the images ")
+plt.show()
 
+print(df[df["NDVI_val"]>0.4]["image_name"])
